@@ -17,6 +17,7 @@ exports.getAllTours = async (req, res) => {
       .limitFields()
       .paginate();
     const tours = await features.query;
+    //we are awaiting after doing all filtering like operation because each operation is returning a query and then we can again apply another operation on it so if we await it again before it will not be a query so we will not be able to apply another query method.
 
     // SEND RESPONSE
     res.status(200).json({
@@ -118,6 +119,7 @@ exports.getTourStats = async (req, res) => {
         $match: { ratingsAverage: { $gte: 4.5 } }
       },
       {
+        /*NOTE: $group is where all the document will accumulated and will be the main data. */
         $group: {
           _id: { $toUpper: '$difficulty' },
           numTours: { $sum: 1 },
@@ -131,6 +133,7 @@ exports.getTourStats = async (req, res) => {
       {
         $sort: { avgPrice: 1 }
       }
+      //NOTE: in sort 1 for ascending and name should be the one that we assigned on $group object previously
       // {
       //   $match: { _id: { $ne: 'EASY' } }
       // }

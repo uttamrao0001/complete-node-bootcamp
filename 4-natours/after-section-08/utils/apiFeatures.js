@@ -12,10 +12,13 @@ class APIFeatures {
     // 1B) Advanced filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+    //as in mongodb we write find({page {$gte: 3}}) but express gives the object without $ so we need to add it externally
+    //g for replacing all occurrence
 
     this.query = this.query.find(JSON.parse(queryStr));
 
     return this;
+    //we returning the object so that we can perform other operation
   }
 
   sort() {
@@ -35,6 +38,7 @@ class APIFeatures {
       this.query = this.query.select(fields);
     } else {
       this.query = this.query.select('-__v');
+      //-__v is for selecting all except v field
     }
 
     return this;
